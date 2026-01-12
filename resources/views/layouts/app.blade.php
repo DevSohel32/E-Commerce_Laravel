@@ -10,7 +10,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="author" content="surfside media" />
+    <meta name="author" content="sujauddoula sohel" />
     <link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.gstatic.com/">
     <link
@@ -689,7 +689,7 @@
     <script src="{{asset('assets/js/plugins/countdown.js')}}"></script>
     <script src="{{asset('assets/js/theme.js')}}"></script>
 
-    @stack('scripts')
-</body>
 
+</body>
+@stack('scripts')
 </html>
