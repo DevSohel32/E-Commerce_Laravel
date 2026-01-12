@@ -10,12 +10,15 @@ use App\Http\Middleware\AuthAdmin;
 Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
-Route::middleware(['auth'])->group(function(){
-Route::get('/account-dashboard', [UserController::class, 'index'])->name('user_index');
-});
 
-Route::middleware(['auth',AuthAdmin::class])->group(function(){
-Route::get('/admin', [AdminController::class, 'index'])->name('admin_index');
-});
+Route::middleware(['auth'])->prefix('user')->name('user.')->group(function() {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+    });
+
+
+Route::middleware(['auth', AuthAdmin::class])->prefix('admin')->name('admin.')->group(function() {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::get('brands', [AdminController::class, 'brands'])->name('brands');
+    });
 
 
