@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Intervention\Image\Laravel\Facades\Image;
 use Carbon\Carbon;
 use App\Models\Brand;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Enums\Position;
 
 
 class AdminController extends Controller
@@ -29,7 +31,7 @@ class AdminController extends Controller
     public function brand_store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:brands,name',
             'slug' => 'required|unique:brands,slug',
             'image' => 'mimes:png,jpg,jpeg|max:2040'
         ]);
@@ -42,17 +44,19 @@ class AdminController extends Controller
         $this->generateBrandThumbnailImage($image, $file_name);
         $brand->image = $file_name;
         $brand->save();
-        return redirect('admin.brands')->with('status', 'Brand has been add successfully');
+        return redirect()->route('admin.brands')->with('status', 'Brand has been add successfully');
     }
 
+
     public function generateBrandThumbnailImage($image, $imageName)
-    {
-        $destinationPath = public_path('upload/brands');
-        $destinationPath = public_path('uploads/brands');
-        $img = Image::read($image->path());
-        $img->cover(124, 124, 'top');
-        $img->resizeCanvas(124, 124, function ($constraint) {
-            $constraint->aspectRatio();
-        })->save($destinationPath . '/' . $imageName);
+{
+    $destinationPath = public_path('uploads/brands');
+    if (!file_exists($destinationPath)) {
+        mkdir($destinationPath, 0755, true);
     }
+    $manager = new ImageManager(new Driver());
+    $img = $manager->read($image->getRealPath());
+
+    $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
+}
 }
