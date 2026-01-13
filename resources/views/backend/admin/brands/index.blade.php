@@ -62,13 +62,11 @@
                             </script>
 
                             <style>
-                                /* ১. টোস্টের পজিশন স্ক্রিন থেকে ২০ পিক্সেল নিচে নামানো */
+                                
                                 .swal2-container.swal2-top-end > .swal2-popup {
                                     margin-top: 20px !important;
                                     margin-right: 20px !important;
                                 }
-
-                                /* ২. পপআপ এরিয়া এবং অ্যালাইনমেন্ট */
                                 .swal-popup-20px {
                                     padding: 12px 25px !important;
                                     display: flex !important;
@@ -78,37 +76,30 @@
                                     box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
                                     border-radius: 10px !important;
                                 }
-
-                                /* ৩. টেক্সট সাইজ ২০ পিক্সেল */
                                 .swal-title-20px {
                                     font-size: 18px !important;
                                     font-weight: 500 !important;
                                     color: #333 !important;
-                                    margin: 0 0 0 12px !important; /* আইকন থেকে টেক্সটের দূরত্ব */
+                                    margin: 0 0 0 12px !important;
                                     padding: 0 !important;
                                     white-space: nowrap;
                                 }
-
-                                /* ৪. আইকন সাইজ ২০ পিক্সেল এবং চ্যাপ্টা হওয়া রোধ করা */
                                 .swal-icon-20px {
                                     width: 20px !important;
                                     height: 20px !important;
-                                    min-width: 20px !important; /* ফ্লেক্সবক্সের কারণে ছোট হওয়া আটকাবে */
                                     margin: 0 !important;
-                                    border: 2px solid currentColor !important; /* রিং চিকন করা */
+                                    border: 2px solid currentColor !important;
                                 }
-
-                                /* ৫. আইকনের ভেতরের চেক মার্ক (টিক চিহ্ন) ঠিক করা */
                                 .swal2-icon.swal2-success.swal-icon-20px [class^=swal2-success-line] {
                                     height: 3px !important;
                                 }
                                 .swal2-icon.swal2-success.swal-icon-20px .swal2-success-line-tip {
-                                    width: 10px !important;
+                                    width: 6px !important;
                                     left: 3px !important;
                                     top: 11px !important;
                                 }
                                 .swal2-icon.swal2-success.swal-icon-20px .swal2-success-line-long {
-                                    width: 10px !important;
+                                    width: 12px !important;
                                     right: 3px !important;
                                     top: 9px !important;
                                 }
