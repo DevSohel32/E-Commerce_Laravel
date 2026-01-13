@@ -19,7 +19,7 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function() {
 Route::middleware(['auth', AuthAdmin::class])->prefix('admin')->name('admin.')->group(function() {
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('brands', [AdminController::class, 'brands'])->name('brands');
-        Route::get('brand/add',[AdminController::class,'addBrand'])->name('brand.add');
+        Route::get('brand/add',[AdminController::class,'add_brand'])->name('brand.add');
     });
 
 
