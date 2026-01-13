@@ -38,7 +38,7 @@
                 <div class="wg-table table-all-user">
                     <div class="table-responsive">
                         @if(Session::has('status'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <div style="font-size:24px" class="font-medium alert alert-success alert-dismissible fade show" role="alert">
                                 {{ Session::get('status') }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -76,8 +76,7 @@
                                             </div>
                                         </a>
 
-
-                                        <form action="#" method="POST">
+                                        <form action="{{ route('admin.brand.delete',['id' => $brand->id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="item text-danger delete" style="border: none; background: none;">

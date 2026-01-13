@@ -54,7 +54,7 @@ class AdminController extends Controller
         return view('backend.admin.brands.update', compact('brand'));
     }
 
-    public function brands_update(Request $request)
+    public function brand_update(Request $request)
     {
         $request->validate([
             'id' => 'required|exists:brands,id',
@@ -85,8 +85,6 @@ class AdminController extends Controller
         return redirect()->route('admin.brands')->with('status', 'Brand has been add successfully');
     }
 
-
-
     public function generateBrandThumbnailImage($image, $imageName)
     {
         $destinationPath = public_path('uploads/brands');
@@ -96,5 +94,20 @@ class AdminController extends Controller
         $manager = new ImageManager(new Driver());
         $img = $manager->read($image->getRealPath());
         $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
+    }
+
+
+    public function brand_delete($id)
+    {
+        $brand = Brand::findOrFail($id);
+        if (!empty($brand->image)) {
+            $imagePath = public_path('uploads/brands/' . $brand->image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+
+        $brand->delete();
+        return redirect()->route('admin.brands')->with('status', 'Brand has been deleted successfully');
     }
 }
