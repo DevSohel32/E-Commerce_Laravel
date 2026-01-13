@@ -114,11 +114,73 @@ class AdminController extends Controller
         return view('backend.admin.categories.index', compact('categories'));
     }
 
-    public function category_create($id){
+    public function category_create(){
         return view('backend.admin.categories.create');
     }
     public function category_store(Request $request){
-        $request->validate([]);
+        $request->validate([
+            'name'=>'required|unique:categories,name',
+            'slug'=> 'required|unique:categories,slug',
+            'image'=>'mimes:png,jpg,jpeg|max:2040'
+        ]);
 
+        $category = new Category();
+        $category->name = $request->name;
+        $category->slug = Str::slug( $request->slug);
+        $image = $request->file('image');
+         $file_ext = $image->extension();
+        $file_name = Carbon::now()->timestamp . '.' . $file_ext;
+        $this->generateCategoryThumbnailImage($image, $file_name);
+        $category->image = $file_name;
+        $category->save();
+        return redirect()->route('admin.categories')->with('status', 'Category has been add successfully');
+
+    }
+
+      public function category_edit($id)
+    {
+         $category = Category::find($id);
+
+        return view('backend.admin.categories.update', compact('category'));
+    }
+
+    public function category_update(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists: categories,id',
+            'name' => 'required|unique: categories,name,' . $request->id,
+            'slug' => 'required|unique: categories,slug,' . $request->id,
+            'image' => 'mimes:png,jpg,jpeg|max:2040'
+        ]);
+
+         $category = Brand::findOrFail($request->id);
+         $category->name = $request->name;
+         $category->slug = Str::slug($request->name);
+        if ($request->hasFile('image')) {
+            // Delete old image file
+            if (File::exists(public_path('uploads/categories/' .  $category->image))) {
+                File::delete(public_path('uploads/categories/' .  $category->image));
+            }
+            // Process new image
+            $image = $request->file('image');
+            $file_ext = $image->extension();
+            $file_name = Carbon::now()->timestamp . '.' . $file_ext;
+
+            $this->generateBrandThumbnailImage($image, $file_name);
+            $category->image = $file_name;
+        }
+        $category->save();
+        return redirect()->route('admin.categories')->with('status', 'Brand has been update successfully');
+    }
+
+     public function generateCategoryThumbnailImage($image, $imageName)
+    {
+        $destinationPath = public_path('uploads/categories');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+        $manager = new ImageManager(new Driver());
+        $img = $manager->read($image->getRealPath());
+        $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
     }
 }

@@ -32,12 +32,12 @@
                             </div>
                         </form>
                     </div>
-                    {{-- <a class="tf-button style-1 w208" href="{{ route('admin.category.add') }}"><i
-                            class="icon-plus"></i>Add new</a> --}}
+                    <a class="tf-button style-1 w208" href="{{ route('admin.category.create') }}"><i
+                            class="icon-plus"></i>Add category </a>
                 </div>
                 <div class="wg-table table-all-user">
                     <div class="table-responsive">
-                  @push('scripts')
+                    @push('scripts')
                         @if(Session::has('status'))
                             <script>
                                 Swal.fire({
@@ -139,19 +139,19 @@
                                 <td><a href="#" target="_blank">1</a></td>
                                 <td>
                                     <div class="list-icon-function">
-                                        {{-- <a href="{{ route('admin.category.edit', ['id' => $category->id]) }}">
+                                        <a href="{{ route('admin.category.edit', ['id' => $category->id]) }}">
                                             <div class="item edit">
                                                 <i class="icon-edit-3"></i>
                                             </div>
-                                        </a> --}}
+                                        </a>
 
-                                        {{-- <form action="{{ route('admin.category.delete',['id' => $category->id]) }}" method="POST">
+                                        <form action="{{ route('admin.category.delete',['id' => $category->id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="item text-danger delete" style="border: none; background: none;">
                                                 <i class="icon-trash-2"></i>
                                             </button>
-                                        </form> --}}
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -171,7 +171,7 @@
 @push('scripts')
 <script>
 $(function() {
-    $('.delete').on('click', function(e) { // Class selector ব্যবহার করা ভালো
+    $('.delete').on('click', function(e) {
         e.preventDefault();
         var form = $(this).closest('form');
 
