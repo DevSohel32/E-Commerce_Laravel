@@ -37,7 +37,7 @@
                 </div>
                 <div class="wg-table table-all-user">
                     <div class="table-responsive">
-                    @push('scripts')
+                  @push('scripts')
                         @if(Session::has('status'))
                             <script>
                                 Swal.fire({
