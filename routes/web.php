@@ -18,16 +18,27 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
 
 Route::middleware(['auth', AuthAdmin::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
+
     Route::get('brands', [AdminController::class, 'brands'])->name('brands');
-    Route::get('brand/add', [AdminController::class, 'add_brand'])->name('brand.add');
+    Route::get('brand/create', [AdminController::class, 'brand_create'])->name('brand.create');
     Route::post('brand/store', [AdminController::class, 'brand_store'])->name('brand.store');
     Route::get('brand/edit/{id}', [AdminController::class, 'brand_edit'])->name('brand.edit');
     Route::put('brand/update', [AdminController::class, 'brand_update'])->name('brand.update');
     Route::delete('brand/delete/{id}', [AdminController::class, 'brand_delete'])->name('brand.delete');
+
+
     Route::get('categories',[AdminController::class,'categories'])->name('categories');
     Route::get('category/create', [AdminController::class,'category_create'])->name('category.create');
     Route::post('category/store', [AdminController::class,'category_store'])->name('category.store');
     Route::get('category/edit/{id}', [AdminController::class, 'category_edit'])->name('category.edit');
     Route::put('category/update', [AdminController::class, 'category_update'])->name('category.update');
     Route::delete('category/delete/{id}', [AdminController::class, 'category_delete'])->name('category.delete');
+
+
+    Route::get('products', [AdminController::class,'products'])->name('products');
+    Route::get('product/create', [AdminController::class, 'product_create'])->name('product.create');
+    Route::post('product/store', [AdminController::class, 'product_store'])->name('product.store');
+    Route::get('product/edit/{id}', [AdminController::class, 'product_edit'])->name('product.edit');
+    Route::put('product/update', [AdminController::class, 'product_update'])->name('product.update');
+    Route::delete('product/delete/{id}', [AdminController::class, 'product_delete'])->name('product.delete');
 });

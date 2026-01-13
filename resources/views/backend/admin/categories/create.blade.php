@@ -97,7 +97,7 @@
     function StringToSlug(text) {
         return text.toLowerCase()
             .replace(/[^\w ]+/g, "")
-            .replace(/\s+/g, "_");
+            .replace(/\s+/g, "-");
     }
 </script>
 
