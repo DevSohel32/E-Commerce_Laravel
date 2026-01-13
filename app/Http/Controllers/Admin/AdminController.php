@@ -51,19 +51,19 @@ class AdminController extends Controller
     {
         $brand = Brand::find($id);
 
-        return view('backend.admin.brands.edit', compact('brand'));
+        return view('backend.admin.brands.update', compact('brand'));
     }
 
     public function brands_update(Request $request)
     {
         $request->validate([
+            'id' => 'required|exists:brands,id',
             'name' => 'required|unique:brands,name,' . $request->id,
             'slug' => 'required|unique:brands,slug,' . $request->id,
             'image' => 'mimes:png,jpg,jpeg|max:2040'
         ]);
 
-        $brand = Brand::find($request->id);
-        $brand = new Brand();
+        $brand = Brand::findOrFail($request->id);
         $brand->name = $request->name;
         $brand->slug = Str::slug($request->name);
         if ($request->hasFile('image')) {
