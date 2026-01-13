@@ -48,15 +48,22 @@ class AdminController extends Controller
     }
 
 
-    public function generateBrandThumbnailImage($image, $imageName)
-{
-    $destinationPath = public_path('uploads/brands');
-    if (!file_exists($destinationPath)) {
-        mkdir($destinationPath, 0755, true);
-    }
-    $manager = new ImageManager(new Driver());
-    $img = $manager->read($image->getRealPath());
 
-    $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
-}
+    public function brand_edit($id){
+        $brand = Brand::find($id);
+
+        return view('backend.admin.brands.edit', compact('brand'));
+
+    }
+
+    public function generateBrandThumbnailImage($image, $imageName)
+        {
+            $destinationPath = public_path('uploads/brands');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            $manager = new ImageManager(new Driver());
+            $img = $manager->read($image->getRealPath());
+            $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
+        }
 }

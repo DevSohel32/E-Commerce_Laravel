@@ -7,7 +7,7 @@
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
                         <a href="{{ route('admin.index') }}">
-                            <div class="text-tiny">{{ Dashboard }}</div>
+                            <div class="text-tiny">Dashboard</div>
                         </a>
                     </li>
                     <li>
@@ -15,14 +15,14 @@
                     </li>
                     <li>
                         <a href="{{ route('admin.brands') }}">
-                            <div class="text-tiny">{{ Brands }}</div>
+                            <div class="text-tiny">Brands</div>
                         </a>
                     </li>
                     <li>
                         <i class="icon-chevron-right"></i>
                     </li>
                     <li>
-                        <div class="text-tiny">{{ Edit Brand }}</div>
+                        <div class="text-tiny">New Brand</div>
                     </li>
                 </ul>
             </div>
