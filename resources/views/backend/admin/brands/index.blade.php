@@ -62,7 +62,7 @@
                             </script>
 
                             <style>
-                                
+
                                 .swal2-container.swal2-top-end > .swal2-popup {
                                     margin-top: 20px !important;
                                     margin-right: 20px !important;
@@ -126,9 +126,6 @@
 
                     @foreach ($brands as $brand)
                             <tr>
-                              {{-- @if ($brand->id)
-                                    <td>{{ id ++ }}</td>
-                              @endif --}}
                               <td>{{ $loop->iteration }}</td>
                                 <td class="pname">
                                     <div class="image">

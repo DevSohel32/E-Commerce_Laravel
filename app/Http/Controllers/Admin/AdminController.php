@@ -110,7 +110,7 @@ class AdminController extends Controller
 
 
     public function categories(){
-        $category = Category::orderBy('name','asc')->paginate(10);
+        $categories = Category::orderBy('id','desc')->paginate(10);
         return view('backend.admin.categories.index', compact('categories'));
     }
 }
