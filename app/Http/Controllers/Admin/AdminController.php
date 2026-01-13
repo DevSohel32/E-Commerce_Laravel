@@ -7,9 +7,10 @@ use App\Models\Brand;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Enums\Position;
+use Intervention\Image\Drivers\Gd\Driver;
 
 
 class AdminController extends Controller
@@ -46,24 +47,54 @@ class AdminController extends Controller
         $brand->save();
         return redirect()->route('admin.brands')->with('status', 'Brand has been add successfully');
     }
-
-
-
-    public function brand_edit($id){
+    public function brand_edit($id)
+    {
         $brand = Brand::find($id);
 
         return view('backend.admin.brands.edit', compact('brand'));
-
     }
 
-    public function generateBrandThumbnailImage($image, $imageName)
-        {
-            $destinationPath = public_path('uploads/brands');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
+    public function brands_update(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|unique:brands,name,' . $request->id,
+            'slug' => 'required|unique:brands,slug,' . $request->id,
+            'image' => 'mimes:png,jpg,jpeg|max:2040'
+        ]);
+
+        $brand = Brand::find($request->id);
+        $brand = new Brand();
+        $brand->name = $request->name;
+        $brand->slug = Str::slug($request->name);
+        if ($request->hasFile('image')) {
+
+            // Delete old image file
+            if (File::exists(public_path('uploads/brands/' . $brand->image))) {
+                File::delete(public_path('uploads/brands/' . $brand->image));
             }
-            $manager = new ImageManager(new Driver());
-            $img = $manager->read($image->getRealPath());
-            $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
+
+            // Process new image
+            $image = $request->file('image');
+            $file_ext = $image->extension();
+            $file_name = Carbon::now()->timestamp . '.' . $file_ext;
+
+            $this->generateBrandThumbnailImage($image, $file_name);
+            $brand->image = $file_name;
         }
+        $brand->save();
+        return redirect()->route('admin.brands')->with('status', 'Brand has been add successfully');
+    }
+
+
+
+    public function generateBrandThumbnailImage($image, $imageName)
+    {
+        $destinationPath = public_path('uploads/brands');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+        $manager = new ImageManager(new Driver());
+        $img = $manager->read($image->getRealPath());
+        $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
+    }
 }
