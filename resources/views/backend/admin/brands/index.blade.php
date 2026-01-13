@@ -37,6 +37,12 @@
                 </div>
                 <div class="wg-table table-all-user">
                     <div class="table-responsive">
+                        @if(Session::has('status'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ Session::get('status') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>

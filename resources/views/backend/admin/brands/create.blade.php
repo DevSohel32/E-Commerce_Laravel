@@ -28,16 +28,22 @@
             </div>
             <!-- new-category -->
             <div class="wg-box">
-                <form class="form-new-product form-style-1" action="#" method="POST" enctype="multipart/form-data">
+                <form class="form-new-product form-style-1" action="{{ route('admin.brand.store')}}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <fieldset class="name">
                         <div class="body-title">Brand Name <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="text" placeholder="Brand name" name="name" tabindex="0" value=""
+                        <input class="flex-grow" type="text" placeholder="Brand name" name="name" tabindex="0" value="{{ old('name') }}"
                             aria-required="true" required="">
+
+                            @error('name') <span class="alert alert-danger text-center">{{ $$message }}</span>
+                            @enderror
                     </fieldset>
                     <fieldset class="name">
                         <div class="body-title">Brand Slug <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="text" placeholder="Brand Slug" name="slug" tabindex="0" value=""
+                        <input class="flex-grow" type="text" placeholder="Brand Slug" name="slug" tabindex="0" value="{{ old('slug') }}"
                             aria-required="true" required="">
+                             @error('slug') <span class="alert alert-danger text-center">{{ $$message }}</span>
+                            @enderror
                     </fieldset>
                     <fieldset>
                         <div class="body-title">Upload images <span class="tf-color-1">*</span>
@@ -56,6 +62,8 @@
                                     <input type="file" id="myFile" name="image" accept="image/*">
                                 </label>
                             </div>
+                             @error('image') <span class="alert alert-danger text-center">{{ $$message }}</span>
+                            @enderror
                         </div>
                     </fieldset>
 
@@ -68,3 +76,17 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+   <script>
+     ${"#myFile"}.on('chang',function{
+           const photoIn = ${'#myFile'};
+           const [file] = this.files;
+           if(file){
+            ${#imgpreview img}.attr('src',URL.createObjectURL(file));
+            ${#imgpreview img}
+           }
+     });
+   </script>
+
+@endpush
