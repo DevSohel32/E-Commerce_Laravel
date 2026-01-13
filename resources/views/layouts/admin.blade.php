@@ -11,7 +11,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="sujauddoula sohel" />
- <link rel="stylesheet" type="text/css" href="{{ asset('css/animate.min.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <link rel="stylesheet" type="text/css" href="{{ asset('css/animate.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/animation.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-select.min.css') }}">

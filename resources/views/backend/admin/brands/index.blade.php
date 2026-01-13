@@ -37,12 +37,90 @@
                 </div>
                 <div class="wg-table table-all-user">
                     <div class="table-responsive">
+                  @push('scripts')
                         @if(Session::has('status'))
-                            <div style="font-size:20px;" class="font-medium alert alert-success alert-dismissible fade show" role="alert">
-                                {{ Session::get('status') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
+                            <script>
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: "{{ Session::get('status') }}",
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    width: 'auto',
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    },
+                                    customClass: {
+                                        title: 'swal-title-20px',
+                                        popup: 'swal-popup-20px',
+                                        icon: 'swal-icon-20px'
+                                    }
+                                });
+                            </script>
+
+                            <style>
+                                /* ১. টোস্টের পজিশন স্ক্রিন থেকে ২০ পিক্সেল নিচে নামানো */
+                                .swal2-container.swal2-top-end > .swal2-popup {
+                                    margin-top: 20px !important;
+                                    margin-right: 20px !important;
+                                }
+
+                                /* ২. পপআপ এরিয়া এবং অ্যালাইনমেন্ট */
+                                .swal-popup-20px {
+                                    padding: 12px 25px !important;
+                                    display: flex !important;
+                                    align-items: center !important;
+                                    justify-content: center !important;
+                                    background: #fff !important;
+                                    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+                                    border-radius: 10px !important;
+                                }
+
+                                /* ৩. টেক্সট সাইজ ২০ পিক্সেল */
+                                .swal-title-20px {
+                                    font-size: 18px !important;
+                                    font-weight: 500 !important;
+                                    color: #333 !important;
+                                    margin: 0 0 0 12px !important; /* আইকন থেকে টেক্সটের দূরত্ব */
+                                    padding: 0 !important;
+                                    white-space: nowrap;
+                                }
+
+                                /* ৪. আইকন সাইজ ২০ পিক্সেল এবং চ্যাপ্টা হওয়া রোধ করা */
+                                .swal-icon-20px {
+                                    width: 20px !important;
+                                    height: 20px !important;
+                                    min-width: 20px !important; /* ফ্লেক্সবক্সের কারণে ছোট হওয়া আটকাবে */
+                                    margin: 0 !important;
+                                    border: 2px solid currentColor !important; /* রিং চিকন করা */
+                                }
+
+                                /* ৫. আইকনের ভেতরের চেক মার্ক (টিক চিহ্ন) ঠিক করা */
+                                .swal2-icon.swal2-success.swal-icon-20px [class^=swal2-success-line] {
+                                    height: 3px !important;
+                                }
+                                .swal2-icon.swal2-success.swal-icon-20px .swal2-success-line-tip {
+                                    width: 10px !important;
+                                    left: 3px !important;
+                                    top: 11px !important;
+                                }
+                                .swal2-icon.swal2-success.swal-icon-20px .swal2-success-line-long {
+                                    width: 10px !important;
+                                    right: 3px !important;
+                                    top: 9px !important;
+                                }
+                                .swal2-icon.swal2-success.swal-icon-20px .swal2-success-ring {
+                                    width: 20px !important;
+                                    height: 20px !important;
+                                }
+                            </style>
                         @endif
+                    @endpush
+
+
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
@@ -104,20 +182,24 @@
 @endsection
 @push('scripts')
 <script>
-$(function{
-$(delete).on('click',function(e){
-    e.preventDefault();
-    var form = $(this).closest('form')
-    swal((
-        title:'Are you sure ?',
-        text:'Once deleted, you will be not able to recover data',
-        type:'warning',
-        button:['No','Yes'],
-        confrimButtonColor:""
-    ))
-})
+$(function() {
+    $('.delete').on('click', function(e) { // Class selector ব্যবহার করা ভালো
+        e.preventDefault();
+        var form = $(this).closest('form');
 
-})
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this record!",
+            icon: "warning",
+            buttons: ["Cancel", "Yes, delete it!"],
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                form.submit();
+            }
+        });
+    });
+});
 
 </script>
 
