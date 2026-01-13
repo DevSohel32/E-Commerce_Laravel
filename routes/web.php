@@ -20,6 +20,7 @@ Route::middleware(['auth', AuthAdmin::class])->prefix('admin')->name('admin.')->
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('brands', [AdminController::class, 'brands'])->name('brands');
         Route::get('brand/add',[AdminController::class,'add_brand'])->name('brand.add');
+        Route::put('brand/store',[AdminController::class,'brand_store'])->name('brand.store');
     });
 
 

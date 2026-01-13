@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Intervention\Image\Laravel\Facades\Image;
 use Carbon\Carbon;
 use App\Models\Brand;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Intervention\Image\Image;
 use App\Http\Controllers\Controller;
 
 
@@ -36,14 +36,11 @@ class AdminController extends Controller
         $brand = new Brand();
         $brand->name = $request->name;
         $brand->slug = Str::slug($request->name);
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $file_ext = $image->extension();
-            $file_name = Carbon::now()->timestamp . '.' . $file_ext;
-
-            $brand->image = $file_name;
-        }
-
+        $image = $request->file('image');
+        $file_ext = $image->extension();
+        $file_name = Carbon::now()->timestamp . '.' . $file_ext;
+        $this->generateBrandThumbnailImage($image, $file_name);
+        $brand->image = $file_name;
         $brand->save();
         return redirect('admin.brands')->with('status', 'Brand has been add successfully');
     }
@@ -52,8 +49,10 @@ class AdminController extends Controller
     {
         $destinationPath = public_path('upload/brands');
         $destinationPath = public_path('uploads/brands');
-        $img = Image::make($image->path());
-        $img->cover(124, 124, 'center');
-        $img->save($destinationPath . '/' . $imageName);
+        $img = Image::read($image->path());
+        $img->cover(124, 124, 'top');
+        $img->resizeCanvas(124, 124, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPath . '/' . $imageName);
     }
 }
