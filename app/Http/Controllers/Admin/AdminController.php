@@ -113,4 +113,12 @@ class AdminController extends Controller
         $categories = Category::orderBy('id','desc')->paginate(10);
         return view('backend.admin.categories.index', compact('categories'));
     }
+
+    public function category_create($id){
+        return view('backend.admin.categories.create');
+    }
+    public function category_store(Request $request){
+        $request->validate([]);
+
+    }
 }
