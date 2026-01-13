@@ -38,7 +38,7 @@
                 <div class="wg-table table-all-user">
                     <div class="table-responsive">
                         @if(Session::has('status'))
-                            <div style="font-size:24px" class="font-medium alert alert-success alert-dismissible fade show" role="alert">
+                            <div style="font-size:20px;" class="font-medium alert alert-success alert-dismissible fade show" role="alert">
                                 {{ Session::get('status') }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -46,7 +46,7 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>id</th>
                                     <th>Name</th>
                                     <th>Slug</th>
                                     <th>Products</th>
@@ -57,7 +57,10 @@
 
                     @foreach ($brands as $brand)
                             <tr>
-                                <td>{{ $brand->id }}</td>
+                              {{-- @if ($brand->id)
+                                    <td>{{ id ++ }}</td>
+                              @endif --}}
+                              <td>{{ $loop->iteration }}</td>
                                 <td class="pname">
                                     <div class="image">
                                         <img src="{{ asset('uploads/brands/' . $brand->image) }}" alt="{{ $brand->name }}" class="image">
@@ -99,3 +102,23 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script>
+$(function{
+$(delete).on('click',function(e){
+    e.preventDefault();
+    var form = $(this).closest('form')
+    swal((
+        title:'Are you sure ?',
+        text:'Once deleted, you will be not able to recover data',
+        type:'warning',
+        button:['No','Yes'],
+        confrimButtonColor:""
+    ))
+})
+
+})
+
+</script>
+
+@endpush

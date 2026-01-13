@@ -67,12 +67,10 @@ class AdminController extends Controller
         $brand->name = $request->name;
         $brand->slug = Str::slug($request->name);
         if ($request->hasFile('image')) {
-
             // Delete old image file
             if (File::exists(public_path('uploads/brands/' . $brand->image))) {
                 File::delete(public_path('uploads/brands/' . $brand->image));
             }
-
             // Process new image
             $image = $request->file('image');
             $file_ext = $image->extension();
@@ -82,7 +80,7 @@ class AdminController extends Controller
             $brand->image = $file_name;
         }
         $brand->save();
-        return redirect()->route('admin.brands')->with('status', 'Brand has been add successfully');
+        return redirect()->route('admin.brands')->with('status', 'Brand has been update successfully');
     }
 
     public function generateBrandThumbnailImage($image, $imageName)
