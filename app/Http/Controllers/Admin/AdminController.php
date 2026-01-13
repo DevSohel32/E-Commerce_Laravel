@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use Carbon\Carbon;
 use App\Models\Brand;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Enums\Position;
@@ -94,7 +94,6 @@ class AdminController extends Controller
         $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
     }
 
-
     public function brand_delete($id)
     {
         $brand = Brand::findOrFail($id);
@@ -107,5 +106,11 @@ class AdminController extends Controller
 
         $brand->delete();
         return redirect()->route('admin.brands')->with('status', 'Brand has been deleted successfully');
+    }
+
+
+    public function categories(){
+        $category = Category::orderBy('name','asc')->paginate(10);
+        return view('backend.admin.categories.index', compact('categories'));
     }
 }
