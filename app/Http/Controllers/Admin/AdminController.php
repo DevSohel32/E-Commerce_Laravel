@@ -147,13 +147,13 @@ class AdminController extends Controller
     public function category_update(Request $request)
     {
         $request->validate([
-            'id' => 'required|exists: categories,id',
-            'name' => 'required|unique: categories,name,' . $request->id,
-            'slug' => 'required|unique: categories,slug,' . $request->id,
+            'id' => 'required|exists:categories,id',
+            'name' => 'required|unique:categories,name,' . $request->id,
+            'slug' => 'required|unique:categories,slug,' . $request->id,
             'image' => 'mimes:png,jpg,jpeg|max:2040'
         ]);
 
-         $category = Brand::findOrFail($request->id);
+         $category = Category::findOrFail($request->id);
          $category->name = $request->name;
          $category->slug = Str::slug($request->name);
         if ($request->hasFile('image')) {
@@ -170,7 +170,7 @@ class AdminController extends Controller
             $category->image = $file_name;
         }
         $category->save();
-        return redirect()->route('admin.categories')->with('status', 'Brand has been update successfully');
+        return redirect()->route('admin.categories')->with('status', 'Category has been update successfully');
     }
 
      public function generateCategoryThumbnailImage($image, $imageName)
@@ -182,5 +182,19 @@ class AdminController extends Controller
         $manager = new ImageManager(new Driver());
         $img = $manager->read($image->getRealPath());
         $img->cover(124, 124, 'center')->save($destinationPath . '/' . $imageName);
+    }
+
+    public function category_delete($id)
+    {
+        $category = Category::findOrFail($id);
+        if (!empty($category->image)) {
+            $imagePath = public_path('uploads/categories/' . $category->image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+
+        $category->delete();
+        return redirect()->route('admin.brands')->with('status', 'Category has been deleted successfully');
     }
 }
