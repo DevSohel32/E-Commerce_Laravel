@@ -28,32 +28,34 @@
             </div>
             <!-- new-category -->
             <div class="wg-box">
-                <form class="form-new-product form-style-1" action="{{ route('admin.category.store')}}" method="POST" enctype="multipart/form-data">
+                <form class="form-new-product form-style-1" action="{{ route('admin.category.store') }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <fieldset class="name">
                         <div class="body-title">Category Name <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="text" placeholder="Category name" name="name" tabindex="0" value="{{ old('name') }}"
-                            aria-required="true" required="">
+                        <input class="flex-grow" type="text" placeholder="Category name" name="name" tabindex="0"
+                            value="{{ old('name') }}" required="">
 
-                           @error('name')
-                                <span class="alert alert-danger text-center">{{ $message }}</span>
-                            @enderror
+                        @error('name')
+                            <span class="text-danger" style="margin-top: 5px; display: block;">{{ $message }}</span>
+                        @enderror
                     </fieldset>
                     <fieldset class="name">
                         <div class="body-title">Category Slug <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="text" placeholder="Category Slug" name="slug" tabindex="0" value="{{ old('slug') }}"
-                            aria-required="true" required="">
-                            @error('slug')
-                                <span class="alert alert-danger text-center">{{ $message }}</span>
-                            @enderror
+                        <input class="flex-grow" type="text" placeholder="Category Slug" name="slug" tabindex="0"
+                            value="{{ old('slug') }}" required="">
+
+                        @error('slug')
+                            <span class="text-danger" style="margin-top: 5px; display: block;">{{ $message }}</span>
+                        @enderror
                     </fieldset>
                     <fieldset>
-                        <div class="body-title">Upload images <span class="tf-color-1">*</span>
-                        </div>
+                        <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
                         <div class="upload-image flex-grow">
                             <div class="item" id="imgpreview" style="display:none">
-                                <img src="upload-1.html" class="effect8" alt="">
+                                <img src="#" class="effect8" alt="Preview Image">
                             </div>
+
                             <div id="upload-file" class="item up-load">
                                 <label class="uploadfile" for="myFile">
                                     <span class="icon">
@@ -64,11 +66,10 @@
                                     <input type="file" id="myFile" name="image" accept="image/*">
                                 </label>
                             </div>
-                            @error('image')
-                                <span class="alert alert-danger text-center">{{ $message }}</span>
-                            @enderror
-                </fieldset>
-
+                        </div> @error('image')
+                            <span class="text-danger" style="margin-top: 5px; display: block;">{{ $message }}</span>
+                        @enderror
+                    </fieldset>
                     <div class="bot">
                         <div></div>
                         <button class="tf-button w208" type="submit">Save</button>
@@ -80,26 +81,27 @@
 @endsection
 
 @push('scripts')
-   <script>
-    $("#myFile").on('change', function () {
-        const photoInp = $("#myFile");
-        const [file] = this.files;
-        if (file) {
-            $("#imgpreview img").attr('src', URL.createObjectURL(file));
-            $("#imgpreview").show();
-        }
-    });
+    <script>
+        $(function() {
 
-    $("input[name=name]").on('change', function () {
-        $("input[name=slug]").val(StringToSlug($(this).val()));
-    });
+            $("#myFile").on('change', function() {
+                const [file] = this.files;
+                if (file) {
+                    $("#imgpreview img").attr('src', URL.createObjectURL(file));
+                    $("#imgpreview").show();
+                }
+            });
 
-    function StringToSlug(text) {
-        return text.toLowerCase()
-            .replace(/[^\w ]+/g, "")
-            .replace(/\s+/g, "-");
-    }
-</script>
+            $("input[name=name]").on('input', function() {
+                $("input[name=slug]").val(StringToSlug($(this).val()));
+            });
 
-
+            function StringToSlug(text) {
+                return text.toLowerCase()
+                    .replace(/[^\w ]+/g, "")
+                    .replace(/\s+/g, "-")
+                    .replace(/^-+|-+$/g, "");
+            }
+        });
+    </script>
 @endpush

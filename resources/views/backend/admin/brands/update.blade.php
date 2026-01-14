@@ -26,37 +26,39 @@
                     </li>
                 </ul>
             </div>
-            <!-- new-category -->
+            <!-- Update- brand -->
             <div class="wg-box">
-                <form class="form-new-product form-style-1" action="{{ route('admin.brand.update')}}" method="POST" enctype="multipart/form-data">
+                <form class="form-new-product form-style-1" action="{{ route('admin.brand.update') }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id" value="{{ $brand->id }}">
                     <fieldset class="name">
                         <div class="body-title">Brand Name <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="text" placeholder="Brand name" name="name" tabindex="0" value="{{ $brand->name }}"
-                            aria-required="true" required="">
+                        <input class="flex-grow" type="text" placeholder="Brand name" name="name" tabindex="0"
+                            value="{{ $brand->name }}" aria-required="true" required="">
 
-                           @error('name')
-                                <span class="alert alert-danger text-center">{{ $message }}</span>
-                            @enderror
+                        @error('name')
+                            <span class="alert alert-danger text-center">{{ $message }}</span>
+                        @enderror
                     </fieldset>
                     <fieldset class="name">
                         <div class="body-title">Brand Slug <span class="tf-color-1">*</span></div>
-                        <input class="flex-grow" type="text" placeholder="Brand Slug" name="slug" tabindex="0" value="{{ $brand->slug }}"
-                            aria-required="true" required="">
-                            @error('slug')
-                                <span class="alert alert-danger text-center">{{ $message }}</span>
-                            @enderror
+                        <input class="flex-grow" type="text" placeholder="Brand Slug" name="slug" tabindex="0"
+                            value="{{ $brand->slug }}" aria-required="true" required="">
+                        @error('slug')
+                            <span class="alert alert-danger text-center">{{ $message }}</span>
+                        @enderror
                     </fieldset>
                     <fieldset>
                         <div class="body-title">Upload images <span class="tf-color-1">*</span>
                         </div>
                         <div class="upload-image flex-grow">
-                            @if($brand->image)
+                            @if ($brand->image)
                                 <div class="item" id="imgpreview">
-                                <img src="{{ asset('uploads/brands') }}/{{ $brand->image }}" class="effect8" alt="">
-                            </div>
+                                    <img src="{{ asset('uploads/brands') }}/{{ $brand->image }}" class="effect8"
+                                        alt="">
+                                </div>
                             @endif
                             <div id="upload-file" class="item up-load">
                                 <label class="uploadfile" for="myFile">
@@ -71,7 +73,7 @@
                             @error('image')
                                 <span class="alert alert-danger text-center">{{ $message }}</span>
                             @enderror
-                </fieldset>
+                    </fieldset>
 
                     <div class="bot">
                         <div></div>
@@ -84,26 +86,27 @@
 @endsection
 
 @push('scripts')
-   <script>
-    $("#myFile").on('change', function () {
-        const photoInp = $("#myFile");
-        const [file] = this.files;
-        if (file) {
-            $("#imgpreview img").attr('src', URL.createObjectURL(file));
-            $("#imgpreview").show();
-        }
-    });
+    <script>
+        $(function() {
 
-    $("input[name=name]").on('change', function () {
-        $("input[name=slug]").val(StringToSlug($(this).val()));
-    });
+            $("#myFile").on('change', function() {
+                const [file] = this.files;
+                if (file) {
+                    $("#imgpreview img").attr('src', URL.createObjectURL(file));
+                    $("#imgpreview").show();
+                }
+            });
 
-    function StringToSlug(text) {
-        return text.toLowerCase()
-            .replace(/[^\w ]+/g, "")
-            .replace(/\s+/g, "_");
-    }
-</script>
+            $("input[name=name]").on('input', function() {
+                $("input[name=slug]").val(StringToSlug($(this).val()));
+            });
 
-
+            function StringToSlug(text) {
+                return text.toLowerCase()
+                    .replace(/[^\w ]+/g, "")
+                    .replace(/\s+/g, "-")
+                    .replace(/^-+|-+$/g, "");
+            }
+        });
+    </script>
 @endpush

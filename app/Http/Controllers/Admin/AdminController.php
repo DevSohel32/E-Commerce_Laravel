@@ -161,28 +161,33 @@ class AdminController extends Controller
             'id' => 'required|exists:categories,id',
             'name' => 'required|unique:categories,name,'.$request->id,
             'slug' => 'required|unique:categories,slug,'.$request->id,
-            'image' => 'mimes:png,jpg,jpeg|max:2040',
+            'image' => 'nullable|mimes:png,jpg,jpeg|max:2040', // Added nullable
         ]);
 
         $category = Category::findOrFail($request->id);
         $category->name = $request->name;
-        $category->slug = Str::slug($request->name);
+        $category->slug = $request->slug; // Save the actual input from the form
+
         if ($request->hasFile('image')) {
-            // Delete old image file
-            if (File::exists(public_path('uploads/categories/'.$category->image))) {
+            // Delete old image file if it exists and isn't empty
+            if (! empty($category->image) && File::exists(public_path('uploads/categories/'.$category->image))) {
                 File::delete(public_path('uploads/categories/'.$category->image));
             }
+
             // Process new image
             $image = $request->file('image');
             $file_ext = $image->extension();
             $file_name = Carbon::now()->timestamp.'.'.$file_ext;
 
-            $this->generateBrandThumbnailImage($image, $file_name);
+            // Ensure this method saves the file to public/uploads/categories
+            $this->generateCategoryThumbnailImage($image, $file_name);
+
             $category->image = $file_name;
         }
+
         $category->save();
 
-        return redirect()->route('admin.categories')->with('status', 'Category has been update successfully');
+        return redirect()->route('admin.categories')->with('status', 'Category has been updated successfully!');
     }
 
     public function generateCategoryThumbnailImage($image, $imageName)
@@ -240,10 +245,9 @@ class AdminController extends Controller
             'featured' => 'required',
             'quantity' => 'required',
             'image' => 'required|mimes:jpg,jpeg,png|max:2040',
-            // Fix: Added '*' to validate each file in the array
             'images.*' => 'mimes:jpg,jpeg,png|max:2040',
-            'category_id' => 'required',
-            'brand_id' => 'required',
+            'category_id' => 'required|integer|exists:categories,id',
+            'brand_id' => 'required|integer|exists:brands,id',
         ]);
 
         $product = new Product;
@@ -277,7 +281,7 @@ class AdminController extends Controller
         }
 
         // 2. Handle Gallery Images
-        $gallery = ''; // <-- FIX: Initialize variable here
+        $gallery = '';
         if ($request->hasFile('images')) {
             $gallery_img = [];
             $count = 1;
@@ -301,5 +305,111 @@ class AdminController extends Controller
         $product->save();
 
         return redirect()->route('admin.products')->with('status', 'Product has been added successfully!');
+    }
+   public function product_edit($id)
+    {
+        $categories = Category::select('id', 'name')->orderBy('name')->get();
+        $brands = Brand::select('id', 'name')->orderBy('name')->get();
+        $product = Product::find($id);
+
+        return view('backend.admin.products.update', compact('product','categories','brands'));
+    }
+    public function product_update(Request $request)
+    {
+        $product = Product::findOrFail($request->id);
+
+        $request->validate([
+            'name' => 'required',
+            'slug' => 'required|unique:products,slug,'.$product->id,
+            'short_description' => 'required',
+            'description' => 'required',
+            'regular_price' => 'required|numeric',
+            'sale_price' => 'nullable|numeric',
+            'SKU' => 'required',
+            'stock_status' => 'required',
+            'featured' => 'required',
+            'quantity' => 'required|integer',
+            'image' => 'mimes:jpg,jpeg,png|max:2040',
+            'images.*' => 'mimes:jpg,jpeg,png|max:2040',
+            'category_id' => 'required|integer|exists:categories,id',
+            'brand_id' => 'required|integer|exists:brands,id',
+        ]);
+
+        $product->name = $request->name;
+        $product->slug = $request->slug; // Request theke neoya bhalo karon validate korecho
+        $product->short_description = $request->short_description;
+        $product->description = $request->description;
+        $product->regular_price = $request->regular_price;
+        $product->sale_price = $request->sale_price;
+        $product->SKU = $request->SKU;
+        $product->stock_status = $request->stock_status;
+        $product->featured = $request->featured;
+        $product->quantity = $request->quantity;
+        $product->category_id = $request->category_id;
+        $product->brand_id = $request->brand_id;
+
+        $destinationPath = public_path('uploads/products');
+
+        // --- Main Thumbnail Update ---
+        if ($request->hasFile('image')) {
+            if (File::exists($destinationPath.'/'.$product->image)) {
+                File::delete($destinationPath.'/'.$product->image);
+            }
+
+            $image = $request->file('image');
+            $imageName = 'product-'.time().'.'.$image->getClientOriginalExtension();
+            $manager = new ImageManager(new Driver);
+            $img = $manager->read($image->getRealPath());
+            $img->cover(540, 689, 'center')->save($destinationPath.'/'.$imageName);
+            $product->image = $imageName;
+        }
+
+        // --- Gallery Images Update ---
+        if ($request->hasFile('images')) {
+
+            if (! empty($product->images)) {
+                $old_images = explode(',', $product->images);
+                foreach ($old_images as $old_img) {
+                    if (File::exists($destinationPath.'/'.$old_img)) {
+                        File::delete($destinationPath.'/'.$old_img);
+                    }
+                }
+            }
+
+            $gallery_img = [];
+            foreach ($request->file('images') as $key => $file) {
+                $gfilename = Carbon::now()->timestamp.'-'.$key.'.'.$file->getClientOriginalExtension();
+                $manager = new ImageManager(new Driver);
+                $img = $manager->read($file->getRealPath());
+                $img->cover(540, 689, 'center')->save($destinationPath.'/'.$gfilename);
+                $gallery_img[] = $gfilename;
+            }
+            $product->images = implode(',', $gallery_img);
+        }
+
+        $product->save();
+
+        return redirect()->route('admin.products')->with('status', 'Product has been updated successfully!');
+    }
+    public function product_delete($id)
+    {
+        $product = Product::findOrFail($id);
+        if (! empty($product->image)) {
+            $imagePath = public_path('uploads/products/'.$product->image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+         if (! empty($product->images)) {
+                $old_images = explode(',', $product->images);
+                foreach ($old_images as $old_img) {
+                    if (File::exists('uploads/products/'.$old_img)) {
+                        File::delete('uploads/products/'.$old_img);
+                    }
+                }
+            }
+         $product->delete();
+
+        return redirect()->route('admin.products')->with('status', 'Product has been deleted successfully');
     }
 }

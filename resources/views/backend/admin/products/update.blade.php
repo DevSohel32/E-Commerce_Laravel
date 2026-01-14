@@ -28,16 +28,17 @@
                     </li>
                 </ul>
             </div>
-            <!-- form-add-product -->
+            <!-- form-update-product -->
             <form class="tf-section-2 form-add-product" method="POST" enctype="multipart/form-data"
-                action="{{ route('admin.product.store') }}">
+                action="{{ route('admin.product.update') }}">
                 @csrf
-
+                @method('PUT')
+                <input type="hidden" name="id" value="{{ $product->id }}">
                 <div class="wg-box">
                     <fieldset class="name">
                         <div class="body-title mb-10">Product name <span class="tf-color-1">*</span></div>
                         <input class="mb-10" type="text" placeholder="Enter product name" name="name"
-                            value="{{ old('name') }}" required="">
+                            value="{{ old('name', $product->name) }}" required="">
                         @error('name')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -46,7 +47,7 @@
                     <fieldset class="name">
                         <div class="body-title mb-10">Slug <span class="tf-color-1">*</span></div>
                         <input class="mb-10" type="text" placeholder="Enter product slug" name="slug"
-                            value="{{ old('slug') }}" required="">
+                            value="{{ old('slug', $product->slug) }}" required="">
                         @error('slug')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -60,7 +61,7 @@
                                     <option value="">Choose category</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
-                                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}</option>
                                     @endforeach
                                 </select>
@@ -77,7 +78,8 @@
                                     <option value="">Choose Brand</option>
                                     @foreach ($brands as $brand)
                                         <option value="{{ $brand->id }}"
-                                            {{ old('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}
+                                            {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>
+                                            {{ $brand->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -90,7 +92,7 @@
 
                     <fieldset class="shortdescription">
                         <div class="body-title mb-10">Short Description <span class="tf-color-1">*</span></div>
-                        <textarea class="mb-10 ht-150" name="short_description" placeholder="Short Description" required="">{{ old('short_description') }}</textarea>
+                        <textarea class="mb-10 ht-150" name="short_description" placeholder="Short Description" required="">{{ old('short_description', $product->short_description) }}</textarea>
                         @error('short_description')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -98,7 +100,7 @@
 
                     <fieldset class="description">
                         <div class="body-title mb-10">Description <span class="tf-color-1">*</span></div>
-                        <textarea class="mb-10" name="description" placeholder="Description" required="">{{ old('description') }}</textarea>
+                        <textarea class="mb-10" name="description" placeholder="Description" required="">{{ old('description', $product->description) }}</textarea>
                         @error('description')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -109,9 +111,13 @@
                     <fieldset>
                         <div class="body-title">Upload images <span class="tf-color-1">*</span></div>
                         <div class="upload-image flex-grow">
-                            <div class="item" id="imgpreview" style="display:none">
-                                <img src="#" class="effect8" alt="Preview Image">
-                            </div>
+                            @if ($product->image)
+                                <div class="item" id="imgpreview">
+                                    <img src="{{ asset('uploads/products') }}/{{ $product->image }}" class="effect8"
+                                        alt="">
+                                </div>
+                            @endif
+
 
                             <div id="upload-file" class="item up-load">
                                 <label class="uploadfile" for="myFile">
@@ -131,9 +137,6 @@
                     <fieldset>
                         <div class="body-title mb-10">Upload Gallery Images</div>
                         <div class="upload-image mb-16">
-                            <!-- <div class="item">
-                                            <img src="images/upload/upload-1.png" alt="">
-                                        </div>                                                 -->
                             <div id="galUpload" class="item up-load">
                                 <label class="uploadfile" for="gFile">
                                     <span class="icon">
@@ -155,7 +158,7 @@
                         <fieldset class="name">
                             <div class="body-title mb-10">Regular Price <span class="tf-color-1">*</span></div>
                             <input type="text" placeholder="Enter regular price" name="regular_price"
-                                value="{{ old('regular_price') }}" required="">
+                                value="{{ old('regular_price', $product->regular_price) }}" required="">
                             @error('regular_price')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -163,7 +166,7 @@
                         <fieldset class="name">
                             <div class="body-title mb-10">Sale Price <span class="tf-color-1">*</span></div>
                             <input type="text" placeholder="Enter sale price" name="sale_price"
-                                value="{{ old('sale_price') }}" required="">
+                                value="{{ old('sale_price', $product->sale_price) }}" required="">
                             @error('sale_price')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -173,8 +176,8 @@
                     <div class="cols gap22">
                         <fieldset class="name">
                             <div class="body-title mb-10">SKU <span class="tf-color-1">*</span></div>
-                            <input type="text" placeholder="Enter SKU" name="SKU" value="{{ old('SKU') }}"
-                                required="">
+                            <input type="text" placeholder="Enter SKU" name="SKU"
+                                value="{{ old('SKU', $product->SKU) }}" required="">
                             @error('SKU')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -182,7 +185,7 @@
                         <fieldset class="name">
                             <div class="body-title mb-10">Quantity <span class="tf-color-1">*</span></div>
                             <input type="text" placeholder="Enter quantity" name="quantity"
-                                value="{{ old('quantity') }}" required="">
+                                value="{{ old('quantity', $product->quantity) }}" required="">
                             @error('quantity')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -197,7 +200,8 @@
                                     <option value="instock" {{ old('stock_status') == 'instock' ? 'selected' : '' }}>
                                         InStock</option>
                                     <option value="outofstock"
-                                        {{ old('stock_status') == 'outofstock' ? 'selected' : '' }}>Out of Stock</option>
+                                        {{ old('stock_status', $product->stock_status) == 'outofstock' ? 'selected' : '' }}>
+                                        Out of Stock</option>
                                 </select>
                             </div>
                         </fieldset>
@@ -205,8 +209,10 @@
                             <div class="body-title mb-10">Featured</div>
                             <div class="select">
                                 <select name="featured">
-                                    <option value="0" {{ old('featured') == '0' ? 'selected' : '' }}>No</option>
-                                    <option value="1" {{ old('featured') == '1' ? 'selected' : '' }}>Yes</option>
+                                    <option value="0"
+                                        {{ old('featured', $product->featured) == '0' ? 'selected' : '' }}>No</option>
+                                    <option value="1"
+                                        {{ old('featured', $product->featured) == '1' ? 'selected' : '' }}>Yes</option>
                                 </select>
                             </div>
                         </fieldset>
