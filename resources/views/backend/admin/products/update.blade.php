@@ -114,7 +114,7 @@
                             @if ($product->image)
                                 <div class="item" id="imgpreview">
                                     <img src="{{ asset('uploads/products') }}/{{ $product->image }}" class="effect8"
-                                        alt="">
+                                        alt="{{ $product->name }}">
                                 </div>
                             @endif
 
@@ -229,9 +229,8 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
+   <script>
         $(function() {
-
             $("#myFile").on('change', function() {
                 const [file] = this.files;
                 if (file) {
@@ -243,17 +242,19 @@
             $("input[name=name]").on('input', function() {
                 $("input[name=slug]").val(StringToSlug($(this).val()));
             });
+
             $("#gFile").on('change', function() {
                 const gphotos = this.files;
-                // Clear existing previews before adding new ones
-                $('#galUpload').html('');
+
+                $(".gitems").remove();
 
                 $.each(gphotos, function(key, val) {
+
                     $('#galUpload').prepend(`
-                    <div class='item gitems'>
-                        <img src="${URL.createObjectURL(val)}" style="width:100px; height:auto; margin:5px;"/>
-                    </div>
-                `);
+                <div class='item gitems'>
+                    <img src="${URL.createObjectURL(val)}" style="width:100px; height:auto; margin:5px;"/>
+                </div>
+            `);
                 });
             });
 

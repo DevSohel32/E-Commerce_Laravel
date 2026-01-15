@@ -132,8 +132,8 @@
                         <div class="body-title mb-10">Upload Gallery Images</div>
                         <div class="upload-image mb-16">
                             <!-- <div class="item">
-                                            <img src="images/upload/upload-1.png" alt="">
-                                        </div>                                                 -->
+                                                <img src="images/upload/upload-1.png" alt="">
+                                            </div>                                                 -->
                             <div id="galUpload" class="item up-load">
                                 <label class="uploadfile" for="gFile">
                                     <span class="icon">
@@ -217,6 +217,7 @@
                     </div>
                 </div>
             </form>
+
             <!-- /form-add-product -->
         </div>
         <!-- /main-content-wrap -->
@@ -225,7 +226,6 @@
 @push('scripts')
     <script>
         $(function() {
-
             $("#myFile").on('change', function() {
                 const [file] = this.files;
                 if (file) {
@@ -237,17 +237,19 @@
             $("input[name=name]").on('input', function() {
                 $("input[name=slug]").val(StringToSlug($(this).val()));
             });
+
             $("#gFile").on('change', function() {
                 const gphotos = this.files;
-                // Clear existing previews before adding new ones
-                $('#galUpload').html('');
+
+                $(".gitems").remove();
 
                 $.each(gphotos, function(key, val) {
+                 
                     $('#galUpload').prepend(`
-                    <div class='item gitems'>
-                        <img src="${URL.createObjectURL(val)}" style="width:100px; height:auto; margin:5px;"/>
-                    </div>
-                `);
+                <div class='item gitems'>
+                    <img src="${URL.createObjectURL(val)}" style="width:100px; height:auto; margin:5px;"/>
+                </div>
+            `);
                 });
             });
 

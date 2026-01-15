@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Surfsidemedia\Shoppingcart\Facades\Cart;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Use '*' to share with all views, or 'layouts.app' to target specific ones
+        View::composer('*', function ($view) {
+            $cart = Cart::instance('cart');
+            $view->with('cartCount', $cart->content()->count());
+        });
     }
 }

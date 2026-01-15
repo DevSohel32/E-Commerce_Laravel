@@ -41,8 +41,8 @@
                 <div class="section-menu-left">
                     <div class="box-logo">
                         <a href="{{ route('admin.index') }}" id="site-logo-inner">
-                            <img class="" id="logo_header" alt="" src="{{ asset('images/logo/logo.png') }}"
-                                data-light="images/logo/logo.png" data-dark="images/logo/logo.png">
+                            <img class="" id="logo_header" alt="sohelShop" src="{{ asset('images/logo/sohelshop.png') }}"
+                                data-light="images/logo/sohelshop.png" data-dark="images/logo/sohelshop.png">
                         </a>
                         <div class="button-show-hide">
                             <i class="icon-menu-left"></i>
@@ -455,7 +455,7 @@
                      @yield('content')
 
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 SurfsideMedia</div>
+                            <div class="body-text">Copyright © 2024 sujauddoulasohel</div>
                         </div>
                     </div>
 
