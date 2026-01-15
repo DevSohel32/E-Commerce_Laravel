@@ -9,6 +9,85 @@
                         <div class="product-single__image">
                             <div class="swiper-container">
                                 <div class="swiper-wrapper">
+                                     @push('scripts')
+                            @if (Session::has('status'))
+                                <script>
+                                    Swal.fire({
+                                        toast: true,
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: "{{ Session::get('status') }}",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        width: 'auto',
+                                        didOpen: (toast) => {
+                                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        },
+                                        customClass: {
+                                            title: 'swal-title-20px',
+                                            popup: 'swal-popup-20px',
+                                            icon: 'swal-icon-20px'
+                                        }
+                                    });
+                                </script>
+
+                                <style>
+                                    .swal2-container.swal2-top-end>.swal2-popup {
+                                        margin-top: 20px !important;
+                                        margin-right: 20px !important;
+                                    }
+
+                                    .swal-popup-20px {
+                                        padding: 12px 25px !important;
+                                        display: flex !important;
+                                        align-items: center !important;
+                                        justify-content: center !important;
+                                        background: #fff !important;
+                                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+                                        border-radius: 10px !important;
+                                    }
+
+                                    .swal-title-20px {
+                                        font-size: 18px !important;
+                                        font-weight: 500 !important;
+                                        color: #333 !important;
+                                        margin: 0 0 0 12px !important;
+                                        padding: 0 !important;
+                                        white-space: nowrap;
+                                    }
+
+                                    .swal-icon-20px {
+                                        width: 20px !important;
+                                        height: 20px !important;
+                                        margin: 0 !important;
+                                        border: 2px solid currentColor !important;
+                                    }
+
+                                    .swal2-icon.swal2-success.swal-icon-20px [class^=swal2-success-line] {
+                                        height: 3px !important;
+                                    }
+
+                                    .swal2-icon.swal2-success.swal-icon-20px .swal2-success-line-tip {
+                                        width: 6px !important;
+                                        left: 3px !important;
+                                        top: 11px !important;
+                                    }
+
+                                    .swal2-icon.swal2-success.swal-icon-20px .swal2-success-line-long {
+                                        width: 12px !important;
+                                        right: 3px !important;
+                                        top: 9px !important;
+                                    }
+
+                                    .swal2-icon.swal2-success.swal-icon-20px .swal2-success-ring {
+                                        width: 20px !important;
+                                        height: 20px !important;
+                                    }
+                                </style>
+                            @endif
+                        @endpush
                                     <div class="swiper-slide product-single__image-item">
                                         <img loading="lazy" class="h-auto"
                                             src="{{ asset('uploads/products') }}/{{ $product->image }}" width="674"

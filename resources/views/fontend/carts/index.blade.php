@@ -28,6 +28,7 @@
                 </a>
             </div>
             <div class="shopping-cart">
+                
                 @if ($items->count() > 0)
                     <div class="cart-table__wrapper">
                         <table class="cart-table">
@@ -118,7 +119,12 @@
                                 <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
                                     value="APPLY COUPON">
                             </form>
-                            <button class="btn btn-light">UPDATE CART</button>
+
+                             <form method="post" action="{{ route('cart.item.empty') }}">
+                                @csrf
+                                @method("DELETE")
+                            <button type="submit" class="btn btn-light">UPDATE CART</button>
+                            </form>
                         </div>
                     </div>
                     <div class="shopping-cart__totals-wrapper">
@@ -147,6 +153,8 @@
                                 </table>
                             </div>
                             <div class="mobile_fixed-btn_wrapper">
+
+
                                 <div class="button-wrapper container">
                                     <a href="checkout.html" class="btn btn-primary btn-checkout">PROCEED TO CHECKOUT</a>
                                 </div>

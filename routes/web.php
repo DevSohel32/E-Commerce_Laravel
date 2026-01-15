@@ -24,7 +24,7 @@ Route::put('/cart/increase-quantity/{rowId}', [CartController::class, 'increase_
 Route::put('/cart/decrease-quantity/{rowId}', [CartController::class, 'decrease_cart_quantity'])->name('cart.qty.decrease');
 Route::delete('/cart/item-remove/{rowId}', [CartController::class, 'remove_item'])->name('cart.item.remove');
 
-
+Route::delete('/cart/item-empty', [CartController::class, 'empty_cart'])->name('cart.item.empty');
 
 
 
@@ -58,4 +58,11 @@ Route::middleware(['auth', AuthAdmin::class])->prefix('admin')->name('admin.')->
     Route::get('product/edit/{id}', [AdminController::class, 'product_edit'])->name('product.edit');
     Route::put('product/update', [AdminController::class, 'product_update'])->name('product.update');
     Route::delete('product/delete/{id}', [AdminController::class, 'product_delete'])->name('product.delete');
+
+    Route::get('coupons', [AdminController::class, 'coupons'])->name('coupons.index');
+    Route::get('coupons/create', [AdminController::class, 'coupon_create'])->name('coupons.create');
+    Route::post('coupons/store', [AdminController::class, 'coupon_store'])->name('coupon.store');
+    Route::get('coupons/edit/{id}', [AdminController::class, 'coupon_edit'])->name('coupon.edit');
+    Route::put('coupons/update', [AdminController::class, 'coupon_update'])->name('coupon.update');
+    Route::delete('coupons/update/{id}', [AdminController::class, 'coupon_delete'])->name('coupon.delete');
 });

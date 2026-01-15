@@ -142,9 +142,9 @@
                                     </a>
                                 </li>
                                 <li class="menu-item">
-                                    <a href="coupons.html" class="">
+                                    <a href="{{ route('admin.coupons.index') }}" class="">
                                         <div class="icon"><i class="icon-grid"></i></div>
-                                        <div class="text">Coupns</div>
+                                        <div class="text">Coupons</div>
                                     </a>
                                 </li>
 
@@ -455,7 +455,7 @@
                      @yield('content')
 
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 sujauddoulasohel</div>
+                            <div class="body-text">Copyright © 2024 sujauddoula sohel</div>
                         </div>
                     </div>
 

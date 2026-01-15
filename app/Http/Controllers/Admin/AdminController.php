@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\Product;
+
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
+use App\Models\Brand;
+use App\Models\Coupon;
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
@@ -17,19 +19,16 @@ class AdminController extends Controller
     {
         return view('backend.admin.index');
     }
-
     public function brands()
     {
         $brands = Brand::orderBy('id', 'desc')->paginate(10);
 
         return view('backend.admin.brands.index', compact('brands'));
     }
-
     public function brand_create()
     {
         return view('backend.admin.brands.create');
     }
-
     public function brand_store(Request $request)
     {
 
@@ -47,7 +46,7 @@ class AdminController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $file_name = Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
+            $file_name = Carbon::now()->timestamp . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('uploads/brands'), $file_name);
 
             $brand->image = $file_name;
@@ -57,20 +56,18 @@ class AdminController extends Controller
 
         return redirect()->route('admin.brands')->with('status', 'Brand has been added successfully');
     }
-
     public function brand_edit($id)
     {
         $brand = Brand::find($id);
 
         return view('backend.admin.brands.update', compact('brand'));
     }
-
     public function brand_update(Request $request)
     {
         $request->validate([
             'id' => 'required|exists:brands,id',
-            'name' => 'required|unique:brands,name,'.$request->id,
-            'slug' => 'required|unique:brands,slug,'.$request->id,
+            'name' => 'required|unique:brands,name,' . $request->id,
+            'slug' => 'required|unique:brands,slug,' . $request->id,
             'image' => 'required|mimes:png,jpg,jpeg|max:2040',
         ]);
 
@@ -80,11 +77,11 @@ class AdminController extends Controller
 
         if ($request->hasFile('image')) {
             $destinationPath = public_path('uploads/brands');
-            if ($brand->image && File::exists($destinationPath.'/'.$brand->image)) {
-                File::delete($destinationPath.'/'.$brand->image);
+            if ($brand->image && File::exists($destinationPath . '/' . $brand->image)) {
+                File::delete($destinationPath . '/' . $brand->image);
             }
             $image = $request->file('image');
-            $file_name = Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
+            $file_name = Carbon::now()->timestamp . '.' . $image->getClientOriginalExtension();
             $image->move($destinationPath, $file_name);
 
             $brand->image = $file_name;
@@ -94,12 +91,11 @@ class AdminController extends Controller
 
         return redirect()->route('admin.brands')->with('status', 'Brand has been updated successfully');
     }
-
     public function brand_delete($id)
     {
         $brand = Brand::findOrFail($id);
         if (! empty($brand->image)) {
-            $imagePath = public_path('uploads/brands/'.$brand->image);
+            $imagePath = public_path('uploads/brands/' . $brand->image);
             if (File::exists($imagePath)) {
                 File::delete($imagePath);
             }
@@ -110,24 +106,26 @@ class AdminController extends Controller
         return redirect()->route('admin.brands')->with('status', 'Brand has been deleted successfully');
     }
 
+
+
+
     public function categories()
     {
         $categories = Category::orderBy('id', 'desc')->paginate(10);
 
         return view('backend.admin.categories.index', compact('categories'));
     }
-
     public function category_create()
     {
         return view('backend.admin.categories.create');
     }
-
     public function category_store(Request $request)
     {
         $request->validate([
             'name' => 'required|unique:categories,name',
             'slug' => 'required|unique:categories,slug',
-            'image' => 'required|mimes:png,jpg,jpeg|max:2040',]);
+            'image' => 'required|mimes:png,jpg,jpeg|max:2040',
+        ]);
 
         $category = new Category;
         $category->name = $request->name;
@@ -135,7 +133,7 @@ class AdminController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $file_name = Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
+            $file_name = Carbon::now()->timestamp . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('uploads/categories'), $file_name);
 
             $category->image = $file_name;
@@ -145,20 +143,18 @@ class AdminController extends Controller
 
         return redirect()->route('admin.categories')->with('status', 'Category has been added successfully');
     }
-
     public function category_edit($id)
     {
         $category = Category::find($id);
 
         return view('backend.admin.categories.update', compact('category'));
     }
-
     public function category_update(Request $request)
     {
         $request->validate([
             'id' => 'required|exists:categories,id',
-            'name' => 'required|unique:categories,name,'.$request->id,
-            'slug' => 'required|unique:categories,slug,'.$request->id,
+            'name' => 'required|unique:categories,name,' . $request->id,
+            'slug' => 'required|unique:categories,slug,' . $request->id,
             'image' => 'nullable|mimes:png,jpg,jpeg|max:2040',
         ]);
 
@@ -168,12 +164,12 @@ class AdminController extends Controller
 
         if ($request->hasFile('image')) {
             $destinationPath = public_path('uploads/categories');
-            if ($category->image && File::exists($destinationPath.'/'.$category->image)) {
-                File::delete($destinationPath.'/'.$category->image);
+            if ($category->image && File::exists($destinationPath . '/' . $category->image)) {
+                File::delete($destinationPath . '/' . $category->image);
             }
-            
+
             $image = $request->file('image');
-            $file_name = Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
+            $file_name = Carbon::now()->timestamp . '.' . $image->getClientOriginalExtension();
             $image->move($destinationPath, $file_name);
 
             $category->image = $file_name;
@@ -183,12 +179,11 @@ class AdminController extends Controller
 
         return redirect()->route('admin.categories')->with('status', 'Category has been updated successfully!');
     }
-
     public function category_delete($id)
     {
         $category = Category::findOrFail($id);
         if (! empty($category->image)) {
-            $imagePath = public_path('uploads/categories/'.$category->image);
+            $imagePath = public_path('uploads/categories/' . $category->image);
             if (File::exists($imagePath)) {
                 File::delete($imagePath);
             }
@@ -199,13 +194,15 @@ class AdminController extends Controller
         return redirect()->route('admin.brands')->with('status', 'Category has been deleted successfully');
     }
 
+
+
+
     public function products()
     {
         $products = Product::orderBy('id', 'desc')->paginate(10);
 
         return view('backend.admin.products.index', compact('products'));
     }
-
     public function product_create()
     {
         $categories = Category::select('id', 'name')->orderBy('name')->get();
@@ -213,7 +210,6 @@ class AdminController extends Controller
 
         return view('backend.admin.products.create', compact('categories', 'brands'));
     }
-
     public function product_store(Request $request)
     {
         $request->validate([
@@ -256,7 +252,7 @@ class AdminController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = 'product-'.time().'.'.$image->getClientOriginalExtension();
+            $imageName = 'product-' . time() . '.' . $image->getClientOriginalExtension();
             $image->move($destinationPath, $imageName);
             $product->image = $imageName;
         }
@@ -264,7 +260,7 @@ class AdminController extends Controller
         if ($request->hasFile('images')) {
             $gallery_img = [];
             foreach ($request->file('images') as $key => $file) {
-                $gfilename = Carbon::now()->timestamp.'-'.($key + 1).'.'.$file->getClientOriginalExtension();
+                $gfilename = Carbon::now()->timestamp . '-' . ($key + 1) . '.' . $file->getClientOriginalExtension();
                 $file->move($destinationPath, $gfilename);
                 $gallery_img[] = $gfilename;
             }
@@ -276,7 +272,6 @@ class AdminController extends Controller
 
         return redirect()->route('admin.products')->with('status', 'Product has been added successfully!');
     }
-
     public function product_edit($id)
     {
         $categories = Category::select('id', 'name')->orderBy('name')->get();
@@ -285,14 +280,13 @@ class AdminController extends Controller
 
         return view('backend.admin.products.update', compact('product', 'categories', 'brands'));
     }
-
     public function product_update(Request $request)
     {
         $product = Product::findOrFail($request->id);
 
         $request->validate([
             'name' => 'required',
-            'slug' => 'required|unique:products,slug,'.$product->id,
+            'slug' => 'required|unique:products,slug,' . $product->id,
             'short_description' => 'required',
             'description' => 'required',
             'regular_price' => 'required|numeric',
@@ -323,12 +317,12 @@ class AdminController extends Controller
 
         $destinationPath = public_path('uploads/products');
         if ($request->hasFile('image')) {
-            if ($product->image && File::exists($destinationPath.'/'.$product->image)) {
-                File::delete($destinationPath.'/'.$product->image);
+            if ($product->image && File::exists($destinationPath . '/' . $product->image)) {
+                File::delete($destinationPath . '/' . $product->image);
             }
 
             $image = $request->file('image');
-            $imageName = 'product-'.time().'.'.$image->getClientOriginalExtension();
+            $imageName = 'product-' . time() . '.' . $image->getClientOriginalExtension();
             $image->move($destinationPath, $imageName);
             $product->image = $imageName;
         }
@@ -339,15 +333,15 @@ class AdminController extends Controller
                 $oldImages = is_array($product->images) ? $product->images : explode(',', $product->images);
 
                 foreach ($oldImages as $old_img) {
-                    if (File::exists($destinationPath.'/'.$old_img)) {
-                        File::delete($destinationPath.'/'.$old_img);
+                    if (File::exists($destinationPath . '/' . $old_img)) {
+                        File::delete($destinationPath . '/' . $old_img);
                     }
                 }
             }
 
             $gallery_img = [];
             foreach ($request->file('images') as $key => $file) {
-                $gfilename = Carbon::now()->timestamp.'-'.($key + 1).'.'.$file->getClientOriginalExtension();
+                $gfilename = Carbon::now()->timestamp . '-' . ($key + 1) . '.' . $file->getClientOriginalExtension();
                 $file->move($destinationPath, $gfilename);
                 $gallery_img[] = $gfilename;
             }
@@ -363,7 +357,7 @@ class AdminController extends Controller
     {
         $product = Product::findOrFail($id);
         if (! empty($product->image)) {
-            $imagePath = public_path('uploads/products/'.$product->image);
+            $imagePath = public_path('uploads/products/' . $product->image);
             if (File::exists($imagePath)) {
                 File::delete($imagePath);
             }
@@ -371,13 +365,79 @@ class AdminController extends Controller
         if (! empty($product->images)) {
             $old_images = explode(',', $product->images);
             foreach ($old_images as $old_img) {
-                if (File::exists('uploads/products/'.$old_img)) {
-                    File::delete('uploads/products/'.$old_img);
+                if (File::exists('uploads/products/' . $old_img)) {
+                    File::delete('uploads/products/' . $old_img);
                 }
             }
         }
         $product->delete();
 
         return redirect()->route('admin.products')->with('status', 'Product has been deleted successfully');
+    }
+
+
+
+    public function coupons()
+    {
+        $coupons = Coupon::orderBy('expiry_date', 'desc')->paginate(12);
+        return view('backend.admin.coupons.index', compact('coupons'));
+    }
+    public function coupon_create()
+    {
+
+        return view('backend.admin.coupons.create');
+    }
+    public function coupon_store(Request $request)
+    {
+        $request->validate([
+            'code' => 'required',
+            'type' => 'required',
+            'value' => 'required|numeric',
+            'cart_value' => 'required|numeric',
+            'expiry_date' => 'required|date'
+        ]);
+
+        $coupon = new Coupon;
+        $coupon->code = $request->code;
+        $coupon->type = $request->type;
+        $coupon->value = $request->value;
+        $coupon->cart_value = $request->cart_value;
+        $coupon->expiry_date = $request->expiry_date;
+        $coupon->save();
+        return redirect()->route('admin.coupons.index')->with('status', 'Coupon has been updated successfully!');
+    }
+    public function coupon_edit($id)
+    {
+        $coupon = Coupon::find($id);
+        return view('backend.admin.coupons.update', compact('coupon'));
+    }
+    public function coupon_update(Request $request)
+    {
+        $request->validate([
+            'code' => 'required',
+            'type' => 'required',
+            'value' => 'required|numeric',
+            'cart_value' => 'required|numeric',
+            'expiry_date' => 'required|date'
+        ]);
+
+        $coupon = Coupon::findOrFail($request->id);
+        $coupon->code = $request->code;
+        $coupon->type = $request->type;
+        $coupon->value = $request->value;
+        $coupon->cart_value = $request->cart_value;
+        $coupon->expiry_date = $request->expiry_date;
+        $coupon->save();
+        return view('backend.admin.coupons.index', compact('coupon'));
+    }
+    public function coupon_delete($id)
+    {
+
+        $coupon = Coupon::findOrFail($id);
+
+
+        $coupon->delete();
+        return redirect()->route('admin.coupons.index')
+            ->with('status', 'Coupon deleted successfully!');
     }
 }
