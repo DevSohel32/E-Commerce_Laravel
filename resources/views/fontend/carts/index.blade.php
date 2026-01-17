@@ -28,7 +28,7 @@
                 </a>
             </div>
             <div class="shopping-cart">
-                
+
                 @if ($items->count() > 0)
                     <div class="cart-table__wrapper">
                         <table class="cart-table">
@@ -114,16 +114,28 @@
                             </tbody>
                         </table>
                         <div class="cart-table-footer">
-                            <form action="#" class="position-relative bg-body">
-                                <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code">
-                                <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
-                                    value="APPLY COUPON">
+                            <form action="{{ route('cart.apply.coupon') }}" method="post"
+                                class="position-relative bg-body">
+                                @csrf
+                                <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code"
+                                    {{ Session::has('coupon') ? 'readonly' : '' }}>
+
+                                @if (Session::has('coupon'))
+                                    <div
+                                        class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4 d-flex align-items-center bg-light">
+                                        <span class="text-success me-2">{{ Session::get('coupon')['code'] }} Applied</span>
+                                        <a href="{{ route('cart.remove.coupon') }}" class="text-danger small">Remove</a>
+                                    </div>
+                                @else
+                                    <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4"
+                                        type="submit" value="APPLY COUPON">
+                                @endif
                             </form>
 
-                             <form method="post" action="{{ route('cart.item.empty') }}">
+                            <form method="post" action="{{ route('cart.item.empty') }}">
                                 @csrf
-                                @method("DELETE")
-                            <button type="submit" class="btn btn-light">UPDATE CART</button>
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-light">UPDATE CART</button>
                             </form>
                         </div>
                     </div>
@@ -133,30 +145,56 @@
                                 <h3>Cart Totals</h3>
                                 <table class="cart-totals">
                                     <tbody>
-                                        <tr>
-                                            <th>Subtotal</th>
-                                            <td>${{ Cart::instance('cart')->subtotal() }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Shipping</th>
-                                            <td>Free</td>
-                                        </tr>
-                                        <tr>
-                                            <th>VAT</th>
-                                            <td>${{ Cart::instance('cart')->tax() }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total</th>
-                                            <td>${{ Cart::instance('cart')->total() }}</td>
-                                        </tr>
+                                        @if (Session::has('discounts'))
+                                            <tr>
+                                                <th>Subtotal</th>
+                                                <td>${{ Cart::instance('cart')->subtotal() }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Discount ({{ Session::get('coupon')['code'] }})</th>
+                                                <td class="text-success">-${{ Session::get('discounts')['discount'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Subtotal after Discount</th>
+                                                <td>${{ Session::get('discounts')['subtotal'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Shipping</th>
+                                                <td>Free</td>
+                                            </tr>
+                                            <tr>
+                                                <th>VAT</th>
+                                                <td>${{ Session::get('discounts')['tax'] }}</td>
+                                            </tr>
+                                            <tr class="cart-total-row">
+                                                <th>Total</th>
+                                                <td class="h4 fw-bold">${{ Session::get('discounts')['total'] }}</td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <th>Subtotal</th>
+                                                <td>${{ Cart::instance('cart')->subtotal() }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Shipping</th>
+                                                <td>Free</td>
+                                            </tr>
+                                            <tr>
+                                                <th>VAT</th>
+                                                <td>${{ Cart::instance('cart')->tax() }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Total</th>
+                                                <td class="h4 fw-bold">${{ Cart::instance('cart')->total() }}</td>
+                                            </tr>
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
                             <div class="mobile_fixed-btn_wrapper">
-
-
                                 <div class="button-wrapper container">
-                                    <a href="checkout.html" class="btn btn-primary btn-checkout">PROCEED TO CHECKOUT</a>
+                                    <a href="{{ route('cart.checkout.index') }}"
+                                        class="btn btn-primary btn-checkout">PROCEED TO CHECKOUT</a>
                                 </div>
                             </div>
                         </div>

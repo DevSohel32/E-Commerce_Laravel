@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\Brand;
+use App\Models\Order;
 use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
@@ -439,5 +441,17 @@ class AdminController extends Controller
         $coupon->delete();
         return redirect()->route('admin.coupons.index')
             ->with('status', 'Coupon deleted successfully!');
+    }
+
+    public function orders(){
+        $orders = Order::orderBy('created_at','desc')->paginate(12);
+        return view('backend.admin.orders.index', compact('orders'));
+
+    }
+    public function order_details($order_id){
+        $order = Order::findOrFail($order_id);
+        $orderItems = Order::where("user_id",$order_id)->orderBy('id')->paginate(12);
+        $transaction = Transaction::where('user_id',$order_id)->first();
+        return view('backend.admin.orders.details', compact('order','orderItems','transaction'));
     }
 }

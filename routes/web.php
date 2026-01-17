@@ -15,16 +15,21 @@ Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/product/details/{product_slug}', [ShopController::class, 'product_details'])->name('shop.product.details');
-
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add_to_cart'])->name('cart.add');
-
 Route::put('/cart/increase-quantity/{rowId}', [CartController::class, 'increase_cart_quantity'])->name('cart.qty.increase');
-
 Route::put('/cart/decrease-quantity/{rowId}', [CartController::class, 'decrease_cart_quantity'])->name('cart.qty.decrease');
 Route::delete('/cart/item-remove/{rowId}', [CartController::class, 'remove_item'])->name('cart.item.remove');
-
 Route::delete('/cart/item-empty', [CartController::class, 'empty_cart'])->name('cart.item.empty');
+Route::post('/cart/coupon-apply', [CartController::class, 'apply_coupon_code'])->name('cart.apply.coupon');
+Route::get('/cart/remove-coupon', [CartController::class, 'remove_coupon'])->name('cart.remove.coupon');
+Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout.index');
+Route::post('/place-an-order', [CartController::class, 'place_an_order'])->name('cart.place.an.order');
+Route::get('/order-confirmation', [CartController::class, 'orderConfirmation'])->name('cart.order.confirmation');
+
+
+
+
 
 
 
@@ -65,4 +70,8 @@ Route::middleware(['auth', AuthAdmin::class])->prefix('admin')->name('admin.')->
     Route::get('coupons/edit/{id}', [AdminController::class, 'coupon_edit'])->name('coupon.edit');
     Route::put('coupons/update', [AdminController::class, 'coupon_update'])->name('coupon.update');
     Route::delete('coupons/update/{id}', [AdminController::class, 'coupon_delete'])->name('coupon.delete');
+
+
+    Route::get('orders', [AdminController::class,'orders'])->name("orders.index");
+    Route::get('order/details/{user_id}', [AdminController::class,'orders'])->name("orders.details");
 });
