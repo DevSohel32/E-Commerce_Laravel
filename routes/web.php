@@ -8,6 +8,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaypalController;
 
 Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
@@ -31,10 +32,18 @@ Route::get('/order-confirmation', [CartController::class, 'orderConfirmation'])-
 
 
 
-
-
 Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
+    // PayPal Routes
+
+    Route::get('/paypal/success/{order_id}', [PaypalController::class, 'paypalSuccess'])->name('paypal.success');
+    Route::get('/paypal/cancel', [PaypalController::class, 'paypalCancel'])->name('paypal.cancel');
+    Route::get('/paypal/payment/{order_id}', [PaypalController::class, 'payWithPaypal'])->name('paypal.payment');
+
+
+    // Google Pay / Stripe Routes
+    Route::post('/googlepay/process', [CartController::class, 'processGooglePay'])->name('googlepay.process');
+
 });
 
 
@@ -73,5 +82,5 @@ Route::middleware(['auth', AuthAdmin::class])->prefix('admin')->name('admin.')->
 
 
     Route::get('orders', [AdminController::class,'orders'])->name("orders.index");
-    Route::get('order/details/{user_id}', [AdminController::class,'orders'])->name("orders.details");
+    Route::get('order/details/{order_id}', [AdminController::class,'order_details'])->name("orders.details");
 });

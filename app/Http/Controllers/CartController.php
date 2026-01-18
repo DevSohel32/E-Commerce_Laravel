@@ -206,7 +206,6 @@ class CartController extends Controller
             $orderItem->save();
         }
 
-        // ট্রানজ্যাকশন সেভ করা
         if ($request->mode == 'cod') {
             $transaction = new Transaction();
             $transaction->user_id = $user_id;
@@ -214,8 +213,19 @@ class CartController extends Controller
             $transaction->mode = $request->mode;
             $transaction->status = "pending";
             $transaction->save();
+
+            Cart::instance('cart')->destroy();
+            Session::forget(['coupon', 'checkout', 'discounts']);
+            Session::put('order_id', $order->id);
+            return redirect()->route('cart.order.confirmation');
         }
-        // googlepay বা paypal এর লজিক এখানে আসবে...
+       elseif ($request->mode == 'paypal') {
+           return redirect()->route('user.paypal.payment', ['order_id' => $order->id]);
+        }
+
+        elseif ($request->mode == 'googlepay') {
+            // return redirect()->route('fontend.payment.googlepay', ['order_id' => $order->id]);
+        }
 
 
         Cart::instance('cart')->destroy();
@@ -264,4 +274,5 @@ class CartController extends Controller
     }
     return redirect()->route('cart.index')->with('error', 'Order not found.');
 }
+
 }

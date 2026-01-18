@@ -12,6 +12,7 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\OrderItem;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\File;
 
@@ -450,8 +451,12 @@ class AdminController extends Controller
     }
     public function order_details($order_id){
         $order = Order::findOrFail($order_id);
-        $orderItems = Order::where("user_id",$order_id)->orderBy('id')->paginate(12);
-        $transaction = Transaction::where('user_id',$order_id)->first();
+        $orderItems = OrderItem::with('product')
+        ->where("order_id", $order_id)
+        ->orderBy('id')
+        ->paginate(12);
+
+        $transaction = Transaction::where('order_id', $order_id)->first();
         return view('backend.admin.orders.details', compact('order','orderItems','transaction'));
     }
 }
